@@ -31,7 +31,10 @@
 #' lapply(c('a | b', 'a / b', 'a & b', 'a %/% b'), p)
 #' par(opar)
 Ops.sfg <- function(e1, e2) {
+	sfg_arith(e1, e2, .Generic, st_is_empty(e1));
+}
 
+sfg_arith <- function(e1, e2, .Generic, empty=TRUE){
 	if (nargs() == 1) {
 		switch (.Generic, 
 			"-" = return(e1 * -1.0),
@@ -48,9 +51,6 @@ Ops.sfg <- function(e1, e2) {
 
 	if (!(prd || pm || mod || set || lgcl))
 		stop(paste("operation", .Generic, "not supported for sfg objects"))
-	
-	if (st_is_empty(e1))
-		return(e1)
 
 	if (inherits(e2, "sfg")) {
 		e2 = switch(.Generic,
@@ -64,6 +64,9 @@ Ops.sfg <- function(e1, e2) {
 		if (inherits(e2, "sfg") || is.logical(e2))
 			return(e2)
 	}
+
+	if (empty)
+		return(e1)
 
 	dims = nchar(class(e1)[1])
 	Vec = rep(0, dims)
@@ -123,17 +126,21 @@ Ops.sfc <- function(e1, e2) {
 	if (!is.list(e2))
 		e2 = list(e2)
 
+	empties = st_is_empty(e1);
+
+	opp_fun<- function(f1, f2, g, empty, simplify){mapply(function(x, y, e) {sfg_arith(x, y, g, e)}, f1, f2, empty, SIMPLIFY = simplify)}
+
 	ret = switch(.Generic,
-		"&"   =  mapply(function(x, y) { x  & y }, e1, e2, SIMPLIFY = FALSE),
-		"|"   =  mapply(function(x, y) { x  | y }, e1, e2, SIMPLIFY = FALSE),
-		"%/%" =  mapply(function(x, y) { x %/% y}, e1, e2, SIMPLIFY = FALSE),
-		"/"   =  mapply(function(x, y) { x  / y }, e1, e2, SIMPLIFY = FALSE),
-		"!="  =  mapply(function(x, y) { x != y }, e1, e2, SIMPLIFY = TRUE),
-		"=="  =  mapply(function(x, y) { x == y }, e1, e2, SIMPLIFY = TRUE),
-		"*"   =  mapply(function(x, y) { x  * y }, e1, e2, SIMPLIFY = FALSE),
-		"+"   =  mapply(function(x, y) { x  + y }, e1, e2, SIMPLIFY = FALSE),
-		"-"   =  mapply(function(x, y) { x  - y }, e1, e2, SIMPLIFY = FALSE),
-		"%%"  =  mapply(function(x, y) { x %% y }, e1, e2, SIMPLIFY = FALSE),
+		"&"   = opp_fun(e1, e2, .Generic, empties, FALSE),
+		"|"   = opp_fun(e1, e2, .Generic, empties, FALSE),
+		"%/%" = opp_fun(e1, e2, .Generic, empties, FALSE),
+		"/"   = opp_fun(e1, e2, .Generic, empties, FALSE),
+		"!="  = opp_fun(e1, e2, .Generic, empties, TRUE),
+		"=="  = opp_fun(e1, e2, .Generic, empties, TRUE),
+		"*"   = opp_fun(e1, e2, .Generic, empties, FALSE),
+		"+"   = opp_fun(e1, e2, .Generic, empties, FALSE),
+		"-"   = opp_fun(e1, e2, .Generic, empties, FALSE),
+		"%%"  = opp_fun(e1, e2, .Generic, empties, FALSE),
 		stop(paste("operation", .Generic, "not supported")))
 
 	if (!(.Generic %in% c("!=", "=="))) {
