@@ -2,7 +2,7 @@
 #' @importFrom stats runif aggregate na.omit
 #' @importFrom tools file_ext file_path_sans_ext
 #' @importFrom methods as slotNames new slot
-#' @importFrom grid convertUnit current.viewport linesGrob pathGrob pointsGrob polylineGrob unit viewport nullGrob
+#' @importFrom grid convertUnit current.viewport linesGrob pathGrob polygonGrob pointsGrob polylineGrob unit viewport nullGrob
 #' @import graphics
 #' @importFrom grDevices rgb
 #' @importFrom Rcpp evalCpp
