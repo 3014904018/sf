@@ -33,18 +33,20 @@ List CPL_xy2sfc(NumericMatrix cc, IntegerVector dim, bool to_points, IntegerVect
 		List ret(which.length());
 		for (int i = 0; i < which.length(); i++) {
 			int ix = which[i] - 1; // from R, 1-based
-			size_t y = ix / (dim[1] - 1); // row index
-			size_t x = ix % (dim[0] - 1); // col index
-			points(0,0) = cc(y * dim[0] + x,           0); // top left
-			points(0,1) = cc(y * dim[0] + x,           1); // top left
-			points(1,0) = cc(y * dim[0] + x + 1,       0); // top right
-			points(1,1) = cc(y * dim[0] + x + 1,       1); // top right
-			points(2,0) = cc((y + 1) * dim[0] + x + 1, 0); // bottom right
-			points(2,1) = cc((y + 1) * dim[0] + x + 1, 1); // bottom right
-			points(3,0) = cc((y + 1) * dim[0] + x,     0); // bottom left
-			points(3,1) = cc((y + 1) * dim[0] + x,     1); // bottom left
-			points(4,0) = cc(y * dim[0] + x,           0); // top left
-			points(4,1) = cc(y * dim[0] + x,           1); // top left
+			//NOTE x and y  might be reversed
+			size_t x = ix / (dim[0] -1);
+			size_t y = ix % (dim[0] -1);
+
+			points(0,0) = cc(x * dim[0] + y,           0); // top left
+			points(0,1) = cc(x * dim[0] + y,           1); // top left
+			points(1,0) = cc(x * dim[0] + y + 1,       0); // top right
+			points(1,1) = cc(x * dim[0] + y + 1,       1); // top right
+			points(2,0) = cc((x + 1) * dim[0] + y + 1, 0); // bottom right
+			points(2,1) = cc((x + 1) * dim[0] + y + 1, 1); // bottom right
+			points(3,0) = cc((x + 1) * dim[0] + y,     0); // bottom left
+			points(3,1) = cc((x + 1) * dim[0] + y,     1); // bottom left
+			points(4,0) = cc(x * dim[0] + y,           0); // top left
+			points(4,1) = cc(x * dim[0] + y,           1); // top left
 			polygon(0) = points;
 			ret(i) = clone(polygon);
 		}
