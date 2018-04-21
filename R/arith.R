@@ -152,3 +152,12 @@ Ops.sfc <- function(e1, e2) {
 	} else
 		ret
 }
+
+#' @export
+#this need a better name
+#squashes points to between 0 and 1
+# range  = xmin,xmax, ymin,ymax
+# this is a temp function untill arith.cpp is built up
+st_squash = function(x,range){
+	return(CPL_arith(x,range,10));
+}

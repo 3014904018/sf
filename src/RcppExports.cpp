@@ -8,6 +8,19 @@
 
 using namespace Rcpp;
 
+// CPL_arith
+List CPL_arith(List x, RObject y_, int opp);
+RcppExport SEXP _sf_CPL_arith(SEXP xSEXP, SEXP y_SEXP, SEXP oppSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< List >::type x(xSEXP);
+    Rcpp::traits::input_parameter< RObject >::type y_(y_SEXP);
+    Rcpp::traits::input_parameter< int >::type opp(oppSEXP);
+    rcpp_result_gen = Rcpp::wrap(CPL_arith(x, y_, opp));
+    return rcpp_result_gen;
+END_RCPP
+}
 // CPL_get_bbox
 Rcpp::NumericVector CPL_get_bbox(Rcpp::List sf, int depth);
 RcppExport SEXP _sf_CPL_get_bbox(SEXP sfSEXP, SEXP depthSEXP) {
@@ -914,6 +927,7 @@ RcppExport SEXP _sf_RcppExport_registerCCallable() {
 }
 
 static const R_CallMethodDef CallEntries[] = {
+    {"_sf_CPL_arith", (DL_FUNC) &_sf_CPL_arith, 3},
     {"_sf_CPL_get_bbox", (DL_FUNC) &_sf_CPL_get_bbox, 2},
     {"_sf_CPL_area", (DL_FUNC) &_sf_CPL_area, 1},
     {"_sf_CPL_gdal_dimension", (DL_FUNC) &_sf_CPL_gdal_dimension, 2},

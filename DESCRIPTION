@@ -23,6 +23,7 @@ Imports:
 	grDevices,
 	grid,
 	Rcpp,
+	RcppArmadillo,
 	RPostgreSQL,
 	DBI (>= 0.8),
 	units (>= 0.4-6),
@@ -53,7 +54,7 @@ Suggests:
 	covr,
 	microbenchmark,
 	rmarkdown
-LinkingTo: Rcpp
+LinkingTo: Rcpp, RcppArmadillo
 VignetteBuilder: knitr
 SystemRequirements: GDAL (>= 2.0.0), GEOS (>= 3.4.0), PROJ.4 (>= 4.8.0)
 License: GPL-2 | MIT + file LICENSE
