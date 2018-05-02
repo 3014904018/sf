@@ -174,8 +174,6 @@ RObject operation_picker_vec(RObject x, RObject y, int opp = -1){
 
 RObject arith_vector(RObject x, RObject  y, NumericVector bbox, int i, int opp){
     RObject out = operation_picker_vec(x,y,opp);
-    if(opp==RANGE)
-	    return(out);
     NumericVector out_b = as<NumericVector>(out);
     if(i==0){
       bbox[0] = out_b[0];
@@ -198,8 +196,6 @@ RObject arith_matrix(RObject mat_x, RObject  mat_y, NumericVector bbox, int i, i
   //
 
   RObject out   = operation_picker_mat(mat_x, mat_y, opp);
-  if(opp==RANGE)
-    return(out);
 
   set_bbox(bbox,out,i);
   return(out);
@@ -393,8 +389,15 @@ int build_sfc(List x, List out){
 
 
   if(x.hasAttribute("crs")){
-     List crs        = x.attr("crs");
-     out.attr("crs") = clone(crs);
+//     List crs        = x.attr("crs");
+//     out.attr("crs") = clone(crs);
+     List crs_l(2);
+     crs_l.attr("class") = "crs";
+     crs_l.names()   = CharacterVector::create("epsg","proj4string");
+     crs_l[0]        = NumericVector::create(NA_REAL);
+     crs_l[1]        = CharacterVector::create(NA_STRING);
+     out.attr("crs") = crs_l;
+
   }
 
   if(x.hasAttribute("n_empty")){
@@ -423,13 +426,17 @@ List  CPL_arith(List x, RObject y_, int opp = -1){
     NumericVector range = as<NumericVector>(clone(y_));
     if(range.size()!=4)
       stop("Range wrong length.");
+
     //converting x/y max to x/y range
     range[2] = range[2] - range[0];
     range[3] = range[3] - range[1];
+
     if(range[2]==0 || range[3]==0)
         stop("range is zero");
+
     for(int i=0; i<n; i++){
       out[i] = arith_geom_picker(x[i], range, bbox, i, opp, 0);
+
     }
     return(out);
   }

@@ -154,10 +154,21 @@ Ops.sfc <- function(e1, e2) {
 }
 
 #' @export
-#this need a better name
-#squashes points to between 0 and 1
+#rescales points to between 0 and 1
 # range  = xmin,xmax, ymin,ymax
 # this is a temp function untill arith.cpp is built up
-st_squash = function(x,range){
-	return(CPL_arith(x,range,10));
+st_rescale = function(x,range=NULL){
+    if(!inherits(x,c("sf","sfc")))
+        stop("No valid Geometry");
+
+    if(missing(range))
+        range = st_bbox(x);
+
+    if(inherits(x,c("sf"))){
+        st_geometry(x) = CPL_arith(st_geometry(x),range,10);
+
+    }else{
+        x = CPL_arith(x,range,10);
+    }
+    return(x);
 }
