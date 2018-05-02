@@ -763,6 +763,17 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
+// CPL_sfc_n_empty
+int CPL_sfc_n_empty(List sfc);
+RcppExport SEXP _sf_CPL_sfc_n_empty(SEXP sfcSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< List >::type sfc(sfcSEXP);
+    rcpp_result_gen = Rcpp::wrap(CPL_sfc_n_empty(sfc));
+    return rcpp_result_gen;
+END_RCPP
+}
 // CPL_signed_area
 double CPL_signed_area(NumericMatrix pts);
 RcppExport SEXP _sf_CPL_signed_area(SEXP ptsSEXP) {
@@ -989,6 +1000,7 @@ static const R_CallMethodDef CallEntries[] = {
     {"_sf_CPL_proj_info", (DL_FUNC) &_sf_CPL_proj_info, 1},
     {"_sf_CPL_proj_direct", (DL_FUNC) &_sf_CPL_proj_direct, 2},
     {"_sf_CPL_xy2sfc", (DL_FUNC) &_sf_CPL_xy2sfc, 4},
+    {"_sf_CPL_sfc_n_empty", (DL_FUNC) &_sf_CPL_sfc_n_empty, 1},
     {"_sf_CPL_signed_area", (DL_FUNC) &_sf_CPL_signed_area, 1},
     {"_sf_CPL_get_metadata", (DL_FUNC) &_sf_CPL_get_metadata, 3},
     {"_sf_CPL_get_crs", (DL_FUNC) &_sf_CPL_get_crs, 2},

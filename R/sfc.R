@@ -102,7 +102,7 @@ st_sfc = function(..., crs = NA_crs_, precision = 0.0, check_ring_dir = FALSE) {
 
 	# set n_empty, check XY* is uniform:
 	if (is.null(attr(lst, "n_empty")) || any(is_null)) { # n_empty is set by CPL_read_wkb:
-		attr(lst, "n_empty") = sum(vapply(lst, sfg_is_empty, TRUE))
+		attr(lst, "n_empty") = CPL_sfc_n_empty(lst)
 		if (length(u <- unique(sfg_classes[1L,])) > 1)
 			stop(paste("found multiple dimensions:", paste(u, collapse = " ")))
 	}

@@ -249,6 +249,10 @@ CPL_xy2sfc <- function(cc, dim, to_points, which) {
     .Call('_sf_CPL_xy2sfc', PACKAGE = 'sf', cc, dim, to_points, which)
 }
 
+CPL_sfc_n_empty <- function(sfc) {
+    .Call('_sf_CPL_sfc_n_empty', PACKAGE = 'sf', sfc)
+}
+
 CPL_signed_area <- function(pts) {
     .Call('_sf_CPL_signed_area', PACKAGE = 'sf', pts)
 }
