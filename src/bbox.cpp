@@ -11,6 +11,11 @@ Rcpp::NumericVector CPL_get_bbox(Rcpp::List sf, int depth = 0) {
 		case 0: // points:
 		for (int i = 0; i < sf.size(); i++) {
 			Rcpp::NumericVector pt = sf[i];
+			//I hope to emulate this
+			//sel = vapply(obj, function(x) length(x) && !all(is.na(x)), TRUE)
+			if(pt.length()<2 || is_true(any(is_na(pt))) )
+				continue;
+
 			if (i == 0) {
 				bb(0) = bb(2) = pt(0);
 				bb(1) = bb(3) = pt(1);
