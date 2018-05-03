@@ -24,8 +24,7 @@ bool check_ints(RObject x, RObject y){
   return(FALSE);
 }
 
-int set_bbox(NumericVector bbox, RObject mat_, int i){
-  NumericMatrix mat = as<NumericMatrix>(mat_);
+int set_bbox(NumericVector bbox, NumericMatrix mat, int i){
   if(i==0){
     bbox[0] = mat(0,0);
     bbox[1] = mat(0,1);
@@ -85,13 +84,10 @@ NumericVector fmodV(NumericVector x, NumericVector y){
 
 
 
-RObject range_matrix(RObject mat_x_, RObject range_){
-  NumericMatrix mat_x = as<NumericMatrix>(mat_x_);
+NumericMatrix range_matrix(NumericMatrix& mat_x, RObject range_){
   NumericVector range = as<NumericVector>(range_);
   mat_x(_,0) = (mat_x(_,0)-range[0])/range[2];
   mat_x(_,1) = (mat_x(_,1)-range[1])/range[3];
-  
-  return(mat_x);
 }
 
 RObject v2m(RObject m){
@@ -107,32 +103,6 @@ RObject v2m(RObject m){
       return(out);
   
   }
-}
-
-RObject operation_picker_mat(RObject mat_x_, RObject mat_y_, int opp = -1){
-  
- 
-    NumericMatrix mat_x = as<NumericMatrix>(clone(mat_x_));
-    NumericMatrix mat_y = as<NumericMatrix>(v2m(mat_y_));
-    
-    switch(opp){
-/*    case ADD:
-      return(add_two_matrix(mat_x, mat_y));
-    case SUB:
-      return(sub_two_matrix(mat_x, mat_y));
-    case PROD:
-      return(prod_two_matrix(mat_x, mat_y));
-    case MOD:
-      return(mod_two_matrix(mat_x, mat_y));
-*/
-    case RANGE:
-      return(range_matrix(mat_x,mat_y));
-    default:
-      return(mat_x);
-    }
-    return(mat_x);
-    
-  
 }
 
 
@@ -190,16 +160,23 @@ RObject arith_vector(RObject x, RObject  y, NumericVector bbox, int i, int opp){
     return(out);
 }
 
-RObject arith_matrix(RObject mat_x, RObject  mat_y, NumericVector bbox, int i, int opp){
+NumericMatrix  arith_matrix(RObject mat_x_, RObject  mat_y_, NumericVector bbox, int i, int opp){
   
-  check_num_int(mat_x,mat_y);
-  //
+  check_num_int(mat_x_, mat_y_);
+  NumericMatrix out = as<NumericMatrix>(clone(mat_x_));
 
-  RObject out   = operation_picker_mat(mat_x, mat_y, opp);
+
+  if(opp!=RANGE){
+    NumericMatrix mat_y = as<NumericMatrix>(v2m(mat_y_));
+    //add opps here
+  }else{
+    range_matrix(out,mat_y_);
+  }
 
   set_bbox(bbox,out,i);
   return(out);
 }
+
 List arith_list(RObject x_, RObject  y_, NumericVector bbox, int i, int opp){
   List x = as<List>(x_);
   int x_l = x.size();
