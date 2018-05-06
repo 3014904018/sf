@@ -253,6 +253,22 @@ CPL_sfc_n_empty <- function(sfc) {
     .Call('_sf_CPL_sfc_n_empty', PACKAGE = 'sf', sfc)
 }
 
+CPL_coord_1 <- function(x) {
+    .Call('_sf_CPL_coord_1', PACKAGE = 'sf', x)
+}
+
+CPL_coord_2 <- function(x) {
+    .Call('_sf_CPL_coord_2', PACKAGE = 'sf', x)
+}
+
+CPL_coord_3 <- function(x) {
+    .Call('_sf_CPL_coord_3', PACKAGE = 'sf', x)
+}
+
+CPL_coord_4 <- function(x) {
+    .Call('_sf_CPL_coord_4', PACKAGE = 'sf', x)
+}
+
 CPL_signed_area <- function(pts) {
     .Call('_sf_CPL_signed_area', PACKAGE = 'sf', pts)
 }

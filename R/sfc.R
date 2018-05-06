@@ -414,18 +414,14 @@ st_coordinates.sfc = function(x, ...) {
 		return(matrix(nrow = 0, ncol = 2))
 
 	ret = switch(class(x)[1],
-		sfc_POINT = matrix(unlist(x, use.names = FALSE), nrow = length(x), byrow = TRUE,
-		     dimnames = list(1:length(x))),
+		sfc_POINT = CPL_coord_1(x),
 		sfc_MULTIPOINT = ,
-		sfc_LINESTRING = coord_2(x),
+		sfc_LINESTRING = CPL_coord_2(x),
 		sfc_MULTILINESTRING = ,
-		sfc_POLYGON = coord_3(x),
-		sfc_MULTIPOLYGON = coord_4(x),
+		sfc_POLYGON = CPL_coord_3(x),
+		sfc_MULTIPOLYGON = CPL_coord_4(x),
 		stop(paste("not implemented for objects of class", class(x)[1]))
 	)
-	Dims = class(x[[1]])[1]
-	ncd = nchar(Dims)
-	colnames(ret)[1:ncd] = vapply(seq_len(ncd), function(i) substr(Dims, i, i), "")
 	ret
 }
 

@@ -2,6 +2,7 @@
 // Generator token: 10BE3573-1514-4C36-9D1C-5A225CD40393
 
 #include "../inst/include/sf.h"
+#include <RcppArmadillo.h>
 #include <Rcpp.h>
 #include <string>
 #include <set>
@@ -774,6 +775,50 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
+// CPL_coord_1
+NumericMatrix CPL_coord_1(List x);
+RcppExport SEXP _sf_CPL_coord_1(SEXP xSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< List >::type x(xSEXP);
+    rcpp_result_gen = Rcpp::wrap(CPL_coord_1(x));
+    return rcpp_result_gen;
+END_RCPP
+}
+// CPL_coord_2
+NumericMatrix CPL_coord_2(List x);
+RcppExport SEXP _sf_CPL_coord_2(SEXP xSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< List >::type x(xSEXP);
+    rcpp_result_gen = Rcpp::wrap(CPL_coord_2(x));
+    return rcpp_result_gen;
+END_RCPP
+}
+// CPL_coord_3
+NumericMatrix CPL_coord_3(List x);
+RcppExport SEXP _sf_CPL_coord_3(SEXP xSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< List >::type x(xSEXP);
+    rcpp_result_gen = Rcpp::wrap(CPL_coord_3(x));
+    return rcpp_result_gen;
+END_RCPP
+}
+// CPL_coord_4
+NumericMatrix CPL_coord_4(List x);
+RcppExport SEXP _sf_CPL_coord_4(SEXP xSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< List >::type x(xSEXP);
+    rcpp_result_gen = Rcpp::wrap(CPL_coord_4(x));
+    return rcpp_result_gen;
+END_RCPP
+}
 // CPL_signed_area
 double CPL_signed_area(NumericMatrix pts);
 RcppExport SEXP _sf_CPL_signed_area(SEXP ptsSEXP) {
@@ -1001,6 +1046,10 @@ static const R_CallMethodDef CallEntries[] = {
     {"_sf_CPL_proj_direct", (DL_FUNC) &_sf_CPL_proj_direct, 2},
     {"_sf_CPL_xy2sfc", (DL_FUNC) &_sf_CPL_xy2sfc, 4},
     {"_sf_CPL_sfc_n_empty", (DL_FUNC) &_sf_CPL_sfc_n_empty, 1},
+    {"_sf_CPL_coord_1", (DL_FUNC) &_sf_CPL_coord_1, 1},
+    {"_sf_CPL_coord_2", (DL_FUNC) &_sf_CPL_coord_2, 1},
+    {"_sf_CPL_coord_3", (DL_FUNC) &_sf_CPL_coord_3, 1},
+    {"_sf_CPL_coord_4", (DL_FUNC) &_sf_CPL_coord_4, 1},
     {"_sf_CPL_signed_area", (DL_FUNC) &_sf_CPL_signed_area, 1},
     {"_sf_CPL_get_metadata", (DL_FUNC) &_sf_CPL_get_metadata, 3},
     {"_sf_CPL_get_crs", (DL_FUNC) &_sf_CPL_get_crs, 2},
