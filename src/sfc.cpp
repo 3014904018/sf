@@ -109,6 +109,8 @@ NumericMatrix CPL_coord_1(List x) {//needs testing
 
   for(int i=0; i<length; i++){
     NumericVector point = x[i];
+    if(point.length()<2)
+      continue;
     out(i,0) = point[0];
     out(i,1) = point[1];
     if(col_z)
@@ -157,19 +159,19 @@ NumericMatrix CPL_coord_2(List x) {//needs testing
   output.fill(0);
   int loc = 0;
 
-
   for(int i=0; i<length; i++){
     arma::mat line = as<arma::mat>(x[i]);
     int line_rows = line.n_rows;
-    output.submat(loc, 0, loc + line_rows-1, 1) = output.submat(loc, 0, loc + line_rows-1, 1) + line.submat(0, 0, line_rows-1, 1);
+      if(line_rows==0)
+        continue;
 
+    output.submat(loc, 0, loc + line_rows-1, 1) = output.submat(loc, 0, loc + line_rows-1, 1) + line.submat(0, 0, line_rows-1, 1);
     if(rows[3])
       output.submat(loc, rows[3], loc + line_rows-1, rows[3]) = output.submat(loc, rows[3], loc + line_rows-1, rows[3]) + line.submat(0, rows[3], line_rows-1, rows[3]);
     if(rows[4])
       output.submat(loc, rows[4], loc + line_rows-1, rows[4]) = output.submat(loc, rows[4], loc + line_rows-1, rows[4]) + line.submat(0, rows[4], line_rows-1, rows[4]);
 
     output.submat(loc, lpos[0], loc + line_rows-1, lpos[0]) = output.submat(loc, lpos[0], loc + line_rows-1, lpos[0]) + i + 1;
-
     loc += line_rows;
   }
 
@@ -221,6 +223,9 @@ NumericMatrix CPL_coord_3(List x) {
   for(int i=0; i<length; i++){
     List poly = x[i];
     int rings = poly.length();
+    if(rings==0)
+      continue;
+
     for(int j=0;j<rings;j++){
       arma::mat ring = as<arma::mat>(poly[j]);
       int ring_rows = ring.n_rows;
@@ -288,6 +293,8 @@ NumericMatrix CPL_coord_4(List x) {
     int start = loc;
     List mpoly = x[i];
     int  polys = mpoly.length();
+    if(polys==0)
+      continue;
     for(int j = 0; j<polys; j++){
       List poly = mpoly[j];
       int rings = poly.length();

@@ -7,7 +7,7 @@ using namespace Rcpp;
 #define RANGE 10
 // [[Rcpp::depends(RcppArmadillo)]]
 
-RObject arith_geom_picker(RObject x, RObject y, NumericVector bbox, int i, int opp, int level);
+RObject arith_geom_picker(RObject x, RObject y, NumericVector& bbox, int i, int opp, int level);
 
 
 int check_num_int(RObject x, RObject y){
@@ -24,7 +24,7 @@ bool check_ints(RObject x, RObject y){
   return(FALSE);
 }
 
-int set_bbox(NumericVector bbox, NumericMatrix mat, int i){
+int set_bbox(NumericVector& bbox, NumericMatrix mat, int i){
   if(i==0){
     bbox[0] = mat(0,0);
     bbox[1] = mat(0,1);
@@ -84,7 +84,7 @@ NumericVector fmodV(NumericVector x, NumericVector y){
 
 
 
-NumericMatrix range_matrix(NumericMatrix& mat_x, RObject range_){
+void range_matrix(NumericMatrix& mat_x, RObject range_){
   NumericVector range = as<NumericVector>(range_);
   mat_x(_,0) = (mat_x(_,0)-range[0])/range[2];
   mat_x(_,1) = (mat_x(_,1)-range[1])/range[3];
@@ -142,7 +142,7 @@ RObject operation_picker_vec(RObject x, RObject y, int opp = -1){
 }
 
 
-RObject arith_vector(RObject x, RObject  y, NumericVector bbox, int i, int opp){
+RObject arith_vector(RObject x, RObject  y, NumericVector& bbox, int i, int opp){
     RObject out = operation_picker_vec(x,y,opp);
     NumericVector out_b = as<NumericVector>(out);
     if(i==0){
@@ -161,7 +161,7 @@ RObject arith_vector(RObject x, RObject  y, NumericVector bbox, int i, int opp){
 }
 
 NumericMatrix  arith_matrix(RObject mat_x_, RObject  mat_y_, NumericVector bbox, int i, int opp){
-  
+
   check_num_int(mat_x_, mat_y_);
   NumericMatrix out = as<NumericMatrix>(clone(mat_x_));
 
@@ -301,53 +301,50 @@ RObject arith_hybrid(RObject x_, RObject y_, NumericVector bbox, int i, int opp,
   return(out);
 }
 
-RObject arith_geom_picker(RObject x, RObject y, NumericVector bbox, int i, int opp, int level){
-  
-  RObject out;
-  
+RObject arith_geom_picker(RObject x, RObject y, NumericVector& bbox, int i, int opp, int level){
+	CharacterVector x_class = x.attr("class");
   //change mess to case
-  if(x.inherits("POINT"))
-    out = arith_vector(x,y,bbox,i,opp);
-  
-  if(x.inherits("MULTIPOINT"))
-     out = arith_matrix(x, y, bbox,i,opp);
-  if(x.inherits("LINESTRING"))//NOT TESTED YET
-    out = arith_matrix(x, y, bbox,i,opp);
-  if(x.inherits("CIRCULARSTRING"))
-    out = arith_matrix(x, y, bbox,i,opp); 
-  if(x.inherits("CURVE"))//NOT TESTED YET
-    out = arith_matrix(x, y, bbox,i,opp); 
-  if(x.inherits("SURFACE"))//NOT TESTED YET
-    out = arith_matrix(x, y, bbox,i,opp); 
-  
-  if(x.inherits("POLYGON"))
-   out = arith_list(x,y,bbox,i,opp);
-  if(x.inherits("MULTILINESTRING"))//NOT YET TESTED
-    out = arith_list(x,y,bbox,i,opp);
-  if(x.inherits("TRIANGLE"))//NOT YET TESTED
-    out = arith_list(x,y,bbox,i,opp);
-  
-  if(x.inherits("MULTIPOLYGON"))//to hybrid?
-    out =arith_list_list(x,y,bbox,i,opp);
-  
-  
-  if(x.inherits("MULTISURFACE"))
-   out = arith_hybrid(x, y, bbox, i, opp, ++level);
-  if(x.inherits("COMPOUNDCURVE"))
-    out =arith_hybrid(x, y, bbox, i, opp, ++level);
-  if(x.inherits("CURVEPOLYGON"))
-    out =arith_hybrid(x, y, bbox, i, opp, ++level);
-  
-  if(x.inherits("GEOMETRYCOLLECTION"))//NOT YET TESTED
-    out =arith_hybrid(x, y, bbox, i, opp, ++level);
-  if(x.inherits("MULTICURVE"))//NOT YET TESTED
-    out =arith_hybrid(x, y, bbox, i, opp, ++level);
-  if(x.inherits("POLYHEDRALSURFACE"))//NOT YET TESTED
-    out =arith_hybrid(x, y, bbox, i, opp, ++level);
-  if(x.inherits("TIN"))//NOT YET TESTED
-    out =arith_hybrid(x, y, bbox, i, opp, ++level);
-  return(out);
+  if(x_class[1] == ("POINT"))
+    return( arith_vector(x,y,bbox,i,opp));
+
+  if(x_class[1] == ("MULTIPOINT"))
+     return(arith_matrix(x, y, bbox,i,opp));
+  if(x_class[1] == ("LINESTRING"))//NOT TESTED YET
+    return( arith_matrix(x, y, bbox,i,opp));
+  if(x_class[1] == ("CIRCULARSTRING"))
+    return( arith_matrix(x, y, bbox,i,opp));
+  if(x_class[1] == ("CURVE"))//NOT TESTED YET
+    return( arith_matrix(x, y, bbox,i,opp));
+  if(x_class[1] == ("SURFACE"))//NOT TESTED YET
+    return( arith_matrix(x, y, bbox,i,opp));
+
+  if(x_class[1] == ("POLYGON"))
+   return( arith_list(x,y,bbox,i,opp));
+  if(x_class[1] == ("MULTILINESTRING"))//NOT YET TESTED
+    return( arith_list(x,y,bbox,i,opp));
+  if(x_class[1] == ("TRIANGLE"))//NOT YET TESTED
+    return( arith_list(x,y,bbox,i,opp));
+
+  if(x_class[1] == ("MULTIPOLYGON"))//to hybrid?
+    return(arith_list_list(x,y,bbox,i,opp));
+
+  if(x_class[1] == ("MULTISURFACE"))
+   return( arith_hybrid(x, y, bbox, i, opp, ++level));
+  if(x_class[1] == ("COMPOUNDCURVE"))
+    return(arith_hybrid(x, y, bbox, i, opp, ++level));
+  if(x_class[1] == ("CURVEPOLYGON"))
+    return(arith_hybrid(x, y, bbox, i, opp, ++level));
+
+  if(x_class[1] == ("GEOMETRYCOLLECTION"))//NOT YET TESTED
+    return(arith_hybrid(x, y, bbox, i, opp, ++level));
+  if(x_class[1] == ("MULTICURVE"))//NOT YET TESTED
+    return(arith_hybrid(x, y, bbox, i, opp, ++level));
+  if(x_class[1] == ("POLYHEDRALSURFACE"))//NOT YET TESTED
+    return(arith_hybrid(x, y, bbox, i, opp, ++level));
+  if(x_class[1] == ("TIN"))//NOT YET TESTED
+    return(arith_hybrid(x, y, bbox, i, opp, ++level));
 }
+
 int build_sfc(List x, List out){
   CharacterVector classes = x.attr("class");
   out.attr("class")       = clone(classes);
