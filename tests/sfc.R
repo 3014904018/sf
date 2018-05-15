@@ -230,6 +230,7 @@ demo(meuse, ask = FALSE, echo = FALSE)
 st_bbox(meuse)
 library(raster)
 st_bbox(raster(meuse.grid))
+st_bbox(extent(raster()))
 
 # st_to_s2
 x = sf:::st_to_s2(nc)
@@ -269,3 +270,21 @@ st_as_sfc(geo, GeoJSON = TRUE)
 st_as_sfc(geo, GeoJSON = TRUE, crs = 4326)
 
 st_as_sfc(st_as_binary(st_sfc(st_point(0:1)))[[1]], crs = 4326)
+
+x = nc
+x$geom = NULL
+class(x)
+
+st_as_sfc(list(st_point(0:1)), crs = 4326)
+
+# crop:
+box = c(xmin = 0, ymin = 0, xmax = 1, ymax = 1)
+
+pol = st_sfc(st_buffer(st_point(c(.5, .5)), .65))
+pol_sf = st_sf(a=1, geom=pol)
+
+st_crop(pol, box)
+st_crop(pol, st_bbox(box))
+st_crop(pol_sf, box)
+st_crop(pol_sf, st_bbox(box))
+

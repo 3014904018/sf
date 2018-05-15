@@ -1,6 +1,6 @@
 
-R version 3.4.3 (2017-11-30) -- "Kite-Eating Tree"
-Copyright (C) 2017 The R Foundation for Statistical Computing
+R version 3.4.4 (2018-03-15) -- "Someone to Lean On"
+Copyright (C) 2018 The R Foundation for Statistical Computing
 Platform: x86_64-pc-linux-gnu (64-bit)
 
 R is free software and comes with ABSOLUTELY NO WARRANTY.
@@ -23,19 +23,23 @@ Cannot open layer foo
 Reading layer `nospatial' from data source `/home/edzer/git/sf.Rcheck/sf/gpkg/nospatial.gpkg' using driver `GPKG'
 Reading layer `nospatial' from data source `/home/edzer/git/sf.Rcheck/sf/gpkg/nospatial.gpkg' using driver `GPKG'
 OGR: Unsupported geometry type
+Reading layer `nc' from data source `/home/edzer/git/sf.Rcheck/sf/shape/nc.shp' using driver `ESRI Shapefile'
+Simple feature collection with 100 features and 14 fields
+geometry type:  MULTIPOLYGON
+dimension:      XY
+bbox:           xmin: -84.32385 ymin: 33.88199 xmax: -75.45698 ymax: 36.58965
+epsg (SRID):    4267
+proj4string:    +proj=longlat +datum=NAD27 +no_defs
 driver `foo' not available.
-Dataset /tmp/Rtmptm79Tg/file324659fc42c1.gpkg already exists: remove first, use update=TRUE to append,
+Dataset /tmp/RtmpNtZBJk/file4f9d523a7309.gpkg already exists: remove first, use update=TRUE to append,
 delete_layer=TRUE to delete layer, or delete_dsn=TRUE to remove the entire data source before writing.
 Creating layer . failed.
 Failed to create feature 1 in x
 Failed to create feature 1 in x
 Failed to create feature 1 in x
-Failed to create feature 1 in x
-Failed to create feature 1 in x
-Failed to create feature 1 in x
 ══ testthat results  ═══════════════════════════════════════════════════════════
-OK: 616 SKIPPED: 2 FAILED: 0
+OK: 851 SKIPPED: 19 FAILED: 0
 > 
 > proc.time()
    user  system elapsed 
-  4.624   0.340   5.333 
+  7.696   0.419   9.594 
