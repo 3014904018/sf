@@ -112,93 +112,109 @@ st_as_grob.POLYGON = function(x, ..., default.units = "native", rule = "evenodd"
 
 #' @export
 st_as_grob.sfc_POLYGON = function(x,gp, ..., default.units = "native", rule = "evenodd") {
-    if (length(x) == 0)
-        nullGrob()
-    else {
-	#find polygons with only one ring and use polygonGrob
-        pieces = sapply(x,length)>1;
-        m = st_coordinates(x[pieces]);
-        gm =if(nrow(m)){
-            is_patched = !grepl("sets = 1",try(pathGrob(sets=1),silent=T)[1])
-            if(is_patched){
-                pathGrob(m[,"X"], m[,"Y"], id=m[,"L1"], gp=gp[pieces],..., default.units = default.units,sets=m[,"L2"], rule = rule)
-	    }else{
-	        #not well tested
-	        polys = split(seq_len(nrow(m)),m[,"L2"]);
-	        grobs.l = vector("list",length=length(polys));
-                for(i in  seq_len(length(polys))){
-                    loc          = polys[[i]];
-                    grobs.l[[i]] = pathGrob(m[loc,"X"], m[loc,"Y"], id=m[loc,"L1"], gp=gp[pieces][i],..., default.units = default.units, rule = rule)
-		}
-                do.call("gList",grobs.l);
-	    }
-	}else{
-            nullGrob();
-	}
+  if (length(x) == 0)
+    nullGrob()
+  else {
+    is_patched = !grepl("sets = 1",try(pathGrob(sets=1),silent=T)[1])
+    if(is_patched){
+      m = st_coordinates(x);
+      b = Sys.time();
+      print(b);
+      pg =pathGrob(m[,"X"], m[,"Y"], id=m[,"L1"], gp=gp,..., default.units = default.units,sets=m[,"L2"], rule = rule)
+      print(Sys.time()-b)
+      pg
 
-        s = st_coordinates(x[!pieces]);
-        gs =if(nrow(s))
-                polygonGrob(s[,"X"], s[,"Y"], id=s[,"L2"], gp=gp[!pieces],..., default.units = default.units)
-            else
-                nullGrob();
+    }else{
+      #find polygons with only one ring and use polygonGrob
+      pieces = sapply(x,length)>1;
+      m = st_coordinates(x[pieces]);
+      gm =if(nrow(m)){
 
-        grid::gList(gm,gs);
+        #not well tested
+        polys = split(seq_len(nrow(m)),m[,"L2"]);
+        grobs.l = vector("list",length=length(polys));
+        for(i in  seq_len(length(polys))){
+          loc          = polys[[i]];
+          grobs.l[[i]] = pathGrob(m[loc,"X"], m[loc,"Y"], id=m[loc,"L1"], gp=gp[pieces][i],..., default.units = default.units, rule = rule)
+        }
+        do.call("gList",grobs.l);
+      }else{
+        nullGrob();
+      }
+
+      s = st_coordinates(x[!pieces]);
+      gs =if(nrow(s))
+        polygonGrob(s[,"X"], s[,"Y"], id=s[,"L2"], gp=gp[!pieces],..., default.units = default.units)
+      else
+        nullGrob();
+
+      grid::gList(gm,gs);
     }
+  }
 }
 
 #' @export
 st_as_grob.MULTIPOLYGON = function(x, ..., default.units = "native", rule = "evenodd") {
-	if (length(x) == 0)
-		nullGrob()
-	else {
-		get_x = function(x) unlist(sapply(x, function(y) sapply(y, function(z) z[,1])))
-		get_y = function(x) unlist(sapply(x, function(y) sapply(y, function(z) z[,2])))
-		get_l = function(x) unlist(sapply(x, function(y) vapply(y, nrow, 0L)))
-		pathGrob(get_x(x), get_y(x), id.lengths = get_l(x), ..., default.units = default.units, rule = rule)
-	}
+  if (length(x) == 0)
+    nullGrob()
+  else {
+    get_x = function(x) unlist(sapply(x, function(y) sapply(y, function(z) z[,1])))
+    get_y = function(x) unlist(sapply(x, function(y) sapply(y, function(z) z[,2])))
+    get_l = function(x) unlist(sapply(x, function(y) vapply(y, nrow, 0L)))
+    pathGrob(get_x(x), get_y(x), id.lengths = get_l(x), ..., default.units = default.units, rule = rule)
+  }
 }
 
 #' @export
 st_as_grob.sfc_MULTIPOLYGON = function(x, gp, ..., default.units = "native", rule = "evenodd") {
-    if (length(x) == 0)
-        nullGrob()
-    else {
-        pieces = sapply(x,function(x){sum(sapply(x,length))})>1;
+  if (length(x) == 0)
+    nullGrob()
+  else {
+    is_patched = !grepl("sets = 1",try(pathGrob(sets=1),silent=T)[1])
+    if(is_patched){
+      geo.len = sapply(x,length)
+      geo.pos = rep(seq_len(length(x)),geo.len);
+      sets    = rep(seq_len(sum(geo.len)),unlist(sapply(x,function(x){sapply(x,function(y){sum(sapply(y,nrow))})})))
+      m = st_coordinates(x);
+      pathGrob(m[,"X"], m[,"Y"], gp = gp[geo.pos], id = m[,"L1"], ..., default.units = default.units, rule = rule, sets=sets)
+    }else{
+      pieces = sapply(x,function(x){sum(sapply(x,length))})>1;
 
-        m = st_coordinates(x[pieces]);
-        gm = NULL;
-    if(nrow(m)>0){
-            is_patched = !grepl("sets = 1",try(pathGrob(sets=1),silent=T)[1])
-            geo.len = sapply(x[pieces],length)
-            geo.pos = rep(seq_len(length(x[pieces])),geo.len);
-            sets    = rep(seq_len(sum(geo.len)),unlist(sapply(x[pieces],function(x){sapply(x,function(y){sum(sapply(y,nrow))})})))
-            gpm     = gp[pieces];
+      m = st_coordinates(x[pieces]);
+      gm = NULL;
+      if(nrow(m)>0){
 
-            if(is_patched){
-                gm  = pathGrob(m[,"X"], m[,"Y"], gp = gpm[geo.pos], id = m[,"L1"], ..., default.units = default.units, rule = rule, sets=sets)
-	    }else{
-	        #not well tested
-                polys   = split(seq_len(nrow(m)),sets);
-	        grobs.l = vector("list",length=length(polys));
-	        for(i in seq_len(length(polys))){
-                    loc          = polys[[i]];
-                    grobs.l[[i]] = pathGrob(m[loc,"X"], m[loc,"Y"], gp = gpm[geo.pos][i], id = m[loc,"L1"], ..., default.units = default.units, rule = rule);
-		}
-                gm = do.call("gList",grobs.l);
-	    }
+        geo.len = sapply(x[pieces],length)
+        geo.pos = rep(seq_len(length(x[pieces])),geo.len);
+        sets    = rep(seq_len(sum(geo.len)),unlist(sapply(x[pieces],function(x){sapply(x,function(y){sum(sapply(y,nrow))})})))
+        gpm     = gp[pieces];
 
+        if(is_patched){
+          gm  = pathGrob(m[,"X"], m[,"Y"], gp = gpm[geo.pos], id = m[,"L1"], ..., default.units = default.units, rule = rule, sets=sets)
         }else{
-            gm = nullGrob();
-    }
+          #not well tested
+          polys   = split(seq_len(nrow(m)),sets);
+          grobs.l = vector("list",length=length(polys));
+          for(i in seq_len(length(polys))){
+            loc          = polys[[i]];
+            grobs.l[[i]] = pathGrob(m[loc,"X"], m[loc,"Y"], gp = gpm[geo.pos][i], id = m[loc,"L1"], ..., default.units = default.units, rule = rule);
+          }
+          gm = do.call("gList",grobs.l);
+        }
 
-        s = st_coordinates(x[!pieces]);
-        gs =if(nrow(s)>0){
-           polygonGrob(s[,"X"], s[,"Y"], id=s[,"L3"], gp=gp[!pieces],..., default.units = default.units)
-        }else{
-           nullGrob();
-       }
-       grid::gList(gm,gs);
+      }else{
+        gm = nullGrob();
+      }
+
+      s = st_coordinates(x[!pieces]);
+      gs =if(nrow(s)>0){
+        polygonGrob(s[,"X"], s[,"Y"], id=s[,"L3"], gp=gp[!pieces],..., default.units = default.units)
+      }else{
+        nullGrob();
+      }
+      grid::gList(gm,gs);
     }
+  }
 }
 
 #' @export
