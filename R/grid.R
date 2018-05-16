@@ -118,10 +118,7 @@ st_as_grob.sfc_POLYGON = function(x,gp, ..., default.units = "native", rule = "e
     is_patched = !grepl("sets = 1",try(pathGrob(sets=1),silent=T)[1])
     if(is_patched){
       m = st_coordinates(x);
-      b = Sys.time();
-      print(b);
       pg =pathGrob(m[,"X"], m[,"Y"], id=m[,"L1"], gp=gp,..., default.units = default.units,sets=m[,"L2"], rule = rule)
-      print(Sys.time()-b)
       pg
 
     }else{
@@ -183,7 +180,6 @@ st_as_grob.sfc_MULTIPOLYGON = function(x, gp, ..., default.units = "native", rul
       m = st_coordinates(x[pieces]);
       gm = NULL;
       if(nrow(m)>0){
-
         geo.len = sapply(x[pieces],length)
         geo.pos = rep(seq_len(length(x[pieces])),geo.len);
         sets    = rep(seq_len(sum(geo.len)),unlist(sapply(x[pieces],function(x){sapply(x,function(y){sum(sapply(y,nrow))})})))
